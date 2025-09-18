@@ -33,6 +33,7 @@ export function CartProvider({ children }) {
   const clearCart = () => dispatch({ type: 'CLEAR_CART' })
 
   const totalItems = state.items.reduce((sum, i) => sum + i.qty, 0)
+  const totalPrice = state.items.reduce((sum, i) => sum + i.qty * i.price, 0)
 
   return (
     <CartContext.Provider
@@ -42,12 +43,14 @@ export function CartProvider({ children }) {
         updateQty,
         removeFromCart,
         clearCart,
-        totalItems
+        totalItems,
+        totalPrice,
       }}
     >
       {children}
     </CartContext.Provider>
-  )
+)
+
 }
 
 CartProvider.propTypes = {

@@ -1,49 +1,73 @@
-import React from 'react';
-import { IconButton, TextField, Typography, Box } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
-import RemoveIcon from '@mui/icons-material/Remove';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { useCart } from '../context/useCart';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { Box, Typography, IconButton, TextField, Card, CardContent, CardMedia, Button } from '@mui/material'
+import DeleteIcon from '@mui/icons-material/Delete'
 
+export default function CartItem({ item, onUpdateQty, onRemove }) {
+  // Handle manual input change
+  const handleQtyChange = (e) => {
+    const value = parseInt(e.target.value || '1', 10)
+    if (value >= 1) {
+      onUpdateQty(item.id, value)
+    }
+  }
 
-export default function CartItem({ item }) {
-const { dispatch } = useCart();
+  // Handle increment/decrement
+  const increment = () => onUpdateQty(item.id, item.qty + 1)
+  const decrement = () => {
+    const newQty = item.qty - 1
+    if (newQty >= 1) {
+      onUpdateQty(item.id, newQty)
+    } else {
+      onRemove(item.id) // remove if quantity goes below 1
+    }
+  }
 
+  return (
+    <Card sx={{ display: 'flex', alignItems: 'center', gap: 2, p: 1, mb: 2 }}>
+      <CardMedia
+        component="img"
+        image={item.image}
+        alt={item.title}
+        sx={{ width: 100, objectFit: 'contain', p: 1 }}
+      />
+      <CardContent sx={{ flexGrow: 1 }}>
+        <Typography variant="subtitle1">{item.title}</Typography>
+        <Typography variant="body2">${item.price.toFixed(2)}</Typography>
 
-const handleQuantityChange = (value) => {
-if (value < 1) return;
-dispatch({
-type: 'UPDATE_ITEM',
-payload: { id: item.id, quantity: value },
-});
-};
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1 }}>
+          <Button variant="outlined" onClick={decrement}>-</Button>
+          <TextField
+            size="small"
+            label="Qty"
+            type="number"
+            inputProps={{ min: 1 }}
+            value={item.qty}
+            onChange={handleQtyChange}
+            sx={{ width: 80 }}
+          />
+          <Button variant="outlined" onClick={increment}>+</Button>
+          <Button
+            variant="outlined"
+            startIcon={<DeleteIcon />}
+            onClick={() => onRemove(item.id)}
+          >
+            Remove
+          </Button>
+        </Box>
+      </CardContent>
+    </Card>
+  )
+}
 
-
-return (
-<Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
-<Typography>{item.title}</Typography>
-<Box display="flex" alignItems="center">
-<IconButton onClick={() => handleQuantityChange(item.quantity - 1)}>
-<RemoveIcon />
-</IconButton>
-<TextField
-type="number"
-value={item.quantity}
-onChange={(e) => handleQuantityChange(Number(e.target.value))}
-slotProps={{
-input: {
-min: 1,
-style: { textAlign: 'center', width: '60px' },
-},
-}}
-/>
-<IconButton onClick={() => handleQuantityChange(item.quantity + 1)}>
-<AddIcon />
-</IconButton>
-<IconButton onClick={() => dispatch({ type: 'REMOVE_ITEM', payload: item.id })}>
-<DeleteIcon />
-</IconButton>
-</Box>
-</Box>
-);
+CartItem.propTypes = {
+  item: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    title: PropTypes.string.isRequired,
+    price: PropTypes.number.isRequired,
+    image: PropTypes.string,
+    qty: PropTypes.number.isRequired
+  }).isRequired,
+  onUpdateQty: PropTypes.func.isRequired,
+  onRemove: PropTypes.func.isRequired
 }
