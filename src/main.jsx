@@ -1,10 +1,26 @@
-import { StrictMode } from 'react'
+import React from 'react'
 import { createRoot } from 'react-dom/client'
+import { BrowserRouter } from 'react-router-dom'
+import { ThemeProvider, CssBaseline, createTheme } from '@mui/material'
+import App from './App'
+import { CartProvider } from './context/CartContext'
 import './index.css'
-import App from './App.jsx'
+
+
+const theme = createTheme({
+  palette: { mode: 'light' }
+})
+
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
+<React.StrictMode>
+  <ThemeProvider theme={theme}>
+    <CssBaseline />
+      <CartProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </CartProvider>
+    </ThemeProvider>
+</React.StrictMode>
 )
