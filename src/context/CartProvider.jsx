@@ -1,7 +1,7 @@
 import React, { useReducer, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { cartReducer, initialState } from './cartReducer'
-import CartContext from './CartContext'
+import { CartContext } from './CartContext'
 
 export function CartProvider({ children }) {
   const [state, dispatch] = useReducer(cartReducer, initialState)

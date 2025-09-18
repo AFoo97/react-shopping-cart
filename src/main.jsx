@@ -1,26 +1,16 @@
 import React from 'react'
-import { createRoot } from 'react-dom/client'
-import { BrowserRouter } from 'react-router-dom'
-import { ThemeProvider, CssBaseline, createTheme } from '@mui/material'
+import ReactDOM from 'react-dom/client'
 import App from './App'
-import { CartProvider } from './context/CartContext'
+import { BrowserRouter } from 'react-router-dom'
+import { CartProvider } from './context/CartProvider'
 import './index.css'
 
-
-const theme = createTheme({
-  palette: { mode: 'light' }
-})
-
-
-createRoot(document.getElementById('root')).render(
-<React.StrictMode>
-  <ThemeProvider theme={theme}>
-    <CssBaseline />
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <BrowserRouter>
       <CartProvider>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
+        <App />
       </CartProvider>
-    </ThemeProvider>
-</React.StrictMode>
+    </BrowserRouter>
+  </React.StrictMode>
 )
